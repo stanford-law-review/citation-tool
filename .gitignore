@@ -17,10 +17,16 @@ pip-delete-this-directory.txt
 .DS_Store
 Thumbs.db
 
-# Input, Output, Temp
-input/
-output/
+# Temp
 py/temp/
+
+# Ignore all files in /input and /output directories
+/input/*
+/output/*
+
+# But don't ignore the directories themselves
+!/input/
+/!output/
 
 # Ignore test results
 tests/results/
