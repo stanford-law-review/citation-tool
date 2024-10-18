@@ -17,7 +17,7 @@ import extract_citations
 # 3. Citations: Extracts citations into a tabular citechecking sheet.
 #
 # Example Usage:
-#    python3 extract.py [body|footnotes|citations] input/INPUT_FILE.docx [--num_acknowledgment_footnotes=1] [--output_folder=output/] [--ai_config_file=ai_config.json] [--enable_markup] 
+#    python extract.py [body|footnotes|citations] input/INPUT_FILE.docx [--num_acknowledgment_footnotes=1] [--output_folder=output/] [--ai_config_file=ai_config.json] [--enable_markup] 
 #
 # ------------------------------
 
