@@ -1,0 +1,7 @@
+argparse
+jsonschema
+openai
+spacy
+titlecase
+unidecode
+vertexai

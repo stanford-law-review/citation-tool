@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE and editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Input, Output, Temp
+input/
+output/
+py/temp/
+
+# Ignore test results
+tests/results/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.lock
+*.log
