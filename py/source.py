@@ -208,6 +208,10 @@ def assign_sources(citations):
             shortcite = citation.lookback["shortcite"]
             reference = citation.lookback.get("reference", "")
 
+            # Supra with no number refers to current citation
+            if reference is None:
+                reference = str(citation.footnote_num)
+
             matched = False
             for candidate in citations:
                 if candidate.type != CitationType.LONG_FORM:
