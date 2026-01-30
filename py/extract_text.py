@@ -1,7 +1,11 @@
 import os
+
 from doc_reader import Doc
 
-def extract_text(input_file, extract_type, num_acknowledgment_footnotes, enable_markup, output_folder):
+
+def extract_text(
+    input_file, extract_type, num_acknowledgment_footnotes, enable_markup, output_folder
+):
     """
     Extracts either body text or footnotes from a Word document based on the specified type.
 
@@ -34,22 +38,24 @@ def extract_text(input_file, extract_type, num_acknowledgment_footnotes, enable_
 
     try:
         # Handle extraction based on the specified type
-        if extract_type == 'footnotes':
+        if extract_type == "footnotes":
             # Extract numbered footnotes
             footnotes = doc.numbered_footnotes()
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 for footnote in footnotes:
-                    f.write(footnote + '\n')
+                    f.write(footnote + "\n")
 
-        elif extract_type == 'body':
+        elif extract_type == "body":
             # Extract the body text
             body = doc.body()
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 f.write(body)
 
         else:
             # Raise an error if an invalid extract_type is provided
-            raise ValueError(f"Invalid extract_type '{extract_type}'. Must be 'body' or 'footnotes'.")
+            raise ValueError(
+                f"Invalid extract_type '{extract_type}'. Must be 'body' or 'footnotes'."
+            )
 
     except Exception as e:
         # Raise any unexpected errors during processing

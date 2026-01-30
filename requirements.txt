@@ -1,6 +1,7 @@
 argparse
 jsonschema
 openai
+python-dotenv
 spacy
 titlecase
 unidecode

@@ -1,16 +1,18 @@
 import re
 from enum import Enum
 
+
 class CitationType(Enum):
     """
     Enumeration for types of citations which are handled differently.
     """
-    # "Long form" citation, the citation form *any* source 
+
+    # "Long form" citation, the citation form *any* source
     # takes the first time the source is cited.
-    LONG_FORM = 1 
+    LONG_FORM = 1
 
     # "Id." citation assumed to refer to the previously cited source.
-    ID = 2 
+    ID = 2
 
     # Short form citations that do not use a supra must have been cited
     # within the previous five footnotes, hence "Lookback 5."
@@ -24,22 +26,39 @@ class CitationType(Enum):
     # dummy citation with this citation type.
     NO_CITE = 5
 
+
 # List of citation patterns and their corresponding types.
 # This is a list of hardcoded patterns that represent how early-draft authors
 # likely *intend* to cite rather than hardcoding actual legal citation rules.
 # As a result, some of the decisions herein are somewhat arbitrary.
 # For the brave, this is something which may be better suited for AI.
 PATTERNS = [
-    (r"^-?$", CitationType.NO_CITE),                       # Dummy citation
-    (r"^id\b", CitationType.ID),                            # ID citation
-    (r"^(?P<shortcite>[^()]+?)[, ]+supra.?( note (?P<reference>[^ ,]+|\. \. \.)([, ].*)?)?$", CitationType.SUPRA),   # Supra citation
-    (r"^.+ \d+ (WL|LEXIS) \d+,? at [*n.\d\-, ]+ \(.+\d{4}\)", CitationType.LONG_FORM), # LEXIS/WL full citation
-    (r"^(?P<shortcite>.+?, ??\d+( [A-Z][^ ,]*| \d{1,2}[A-Z]{1,2})*)( \d+,?)?? at [*\d]", CitationType.LOOKBACK_5), # Short case or journal citation
-    (r"^(?P<shortcite>§.*)", CitationType.LOOKBACK_5),                # Short statute citation
-    (r"^U\.S\. Const\.", CitationType.LONG_FORM),                     # U.S. Constitution citation
-    (r"^([^ ]{,25} )?(supra|infra)\b", CitationType.LONG_FORM),       # Internal cross-reference
-    (r"^(?P<shortcite>[^,()]{,40}?)([, ]+(at)?( (sec\.|¶¶?|art\.|para\.)?[\d\-, ]+)*)?$", CitationType.LOOKBACK_5),  # Very short citation
+    (r"^-?$", CitationType.NO_CITE),  # Dummy citation
+    (r"^id\b", CitationType.ID),  # ID citation
+    (
+        r"^(?P<shortcite>[^()]+?)[, ]+supra.?( note (?P<reference>[^ ,]+|\. \. \.)([, ].*)?)?$",
+        CitationType.SUPRA,
+    ),  # Supra citation
+    (
+        r"^.+ \d+ (WL|LEXIS) \d+,? at [*n.\d\-, ]+ \(.+\d{4}\)",
+        CitationType.LONG_FORM,
+    ),  # LEXIS/WL full citation
+    (
+        r"^(?P<shortcite>.+?, ??\d+( [A-Z][^ ,]*| \d{1,2}[A-Z]{1,2})*)( \d+,?)?? at [*\d]",
+        CitationType.LOOKBACK_5,
+    ),  # Short case or journal citation
+    (r"^(?P<shortcite>§.*)", CitationType.LOOKBACK_5),  # Short statute citation
+    (r"^U\.S\. Const\.", CitationType.LONG_FORM),  # U.S. Constitution citation
+    (
+        r"^([^ ]{,25} )?(supra|infra)\b",
+        CitationType.LONG_FORM,
+    ),  # Internal cross-reference
+    (
+        r"^(?P<shortcite>[^,()]{,40}?)([, ]+(at)?( (sec\.|¶¶?|art\.|para\.)?[\d\-, ]+)*)?$",
+        CitationType.LOOKBACK_5,
+    ),  # Very short citation
 ]
+
 
 def classify_cite(text):
     """
@@ -49,14 +68,16 @@ def classify_cite(text):
     - text (str): The citation text to be classified.
 
     Returns:
-    - (CitationType, dict): A tuple where the first value is the citation type and the second is 
+    - (CitationType, dict): A tuple where the first value is the citation type and the second is
                             a dictionary of matched groups, if any. The matched groups, produced during
                             the regular expression parsing, capture information such as the short form
                             of the source author or title and the footnote referenced in a supra clause.
     """
     text = re.sub(r"\s+", " ", text)  # Clean up whitespace
     lookback = {}
-    citation_type = CitationType.LONG_FORM  # Default to LONG_FORM unless a match is found
+    citation_type = (
+        CitationType.LONG_FORM
+    )  # Default to LONG_FORM unless a match is found
 
     # Try matching the text with each pattern
     for pattern, candidate_type in PATTERNS:
@@ -68,10 +89,11 @@ def classify_cite(text):
 
     return citation_type, lookback
 
+
 class Citation:
     """
     Represents a single citation within a legal document footnote.
-    
+
     Attributes:
     - footnote_num (int): The number of the footnote containing the citation.
     - citation_num (int): The number of the citation within the footnote.
@@ -82,13 +104,16 @@ class Citation:
     - type (CitationType): The type of citation determined by pattern matching.
     - lookback (dict): Dictionary of matched groups for citations requiring backward references.
     """
+
     def __init__(self, footnote_num, citation_num=0, text=""):
         self.footnote_num = footnote_num
         self.citation_num = citation_num
         self.text = text
         self.footnote_text = ""
-        self.warnings = [] 
-        self.source = None  # Source will be assigned during the citation parsing process
+        self.warnings = []
+        self.source = (
+            None  # Source will be assigned during the citation parsing process
+        )
 
         # If the citation text is empty, this indicates no citations are present in the footnote
         if text == "":
@@ -104,18 +129,20 @@ class Citation:
     def to_tsv_row(self):
         """
         Converts the citation into a tab-separated value (TSV) row format.
-        
+
         Returns:
         - str: A TSV row containing the citation details.
         """
         # Append source-related warnings if this is a long-form citation
         warnings = self.warnings
         if self.type == CitationType.LONG_FORM and self.source:
-            warnings += self.source.warnings  # Add source warnings only for long-form citations
-        
+            warnings += (
+                self.source.warnings
+            )  # Add source warnings only for long-form citations
+
         # Join warnings into a single string
         warnings_str = " ".join(warnings)
-        
+
         # Return TSV row with or without a source name
         if self.source:
             return f"{self.footnote_num}\t{self.citation_num}\t{self.footnote_text}\t{self.text}\t{self.source.name}\t{warnings_str}\n"

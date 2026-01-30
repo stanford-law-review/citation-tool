@@ -1,6 +1,6 @@
 {
-    "platform": "Vertex AI",
-    "vertex_ai_endpoint": "projects/YOUR_PROJECT_ID/locations/YOUR_LOCATION/models/YOUR_MODEL_ENDPOINT_ID",
-    "system_instruction": "Extract all legal citations from the following footnote with one citation per line.",
-    "temperature": 0.01
-}
+       "platform": "OpenAI",
+       "openai_model": "ft:gpt-4.1-2025-04-14:stanford-reglab:cite-extract:BWg7mCw1",
+       "system_instruction": "Extract all legal citations from the following footnote with one citation per line.",
+       "temperature": 0.01
+   }

@@ -22,6 +22,7 @@ The *SLR* Citation Tool is a Python-based tool designed to assist law journal ed
 │   ├── source.py                    # Source management and disambiguation
 │   └── tests/                       # Directory containing unit tests
 ├── ai_config.json                   # AI configuration file
+├── .env                             # Environment variables (API keys, etc.)
 ├── requirements.txt                 # List of required Python packages
 └── README.md                        # Readme (this file)
 ```
@@ -45,6 +46,16 @@ You'll also need the `en_core_web_sm` model for **spaCy**:
 ```bash
 python -m spacy download en_core_web_sm
 ```
+
+### Environment Variables Setup
+
+For OpenAI integration, create a `.env` file in the root directory with your API key:
+
+```bash
+OPENAI_API_KEY=your-openai-api-key-here
+```
+
+**Important:** Never commit your `.env` file to version control. It should be listed in your `.gitignore`.
 
 ---
 
@@ -158,21 +169,20 @@ The citation extraction task performs the best using a supervised fine-tuned gen
    ```
    We recommend a low temperature setting to ensure deterministic behavior.
 
-2. **OpenAI**  
-   This option uses OpenAI's GPT models for parsing citations. You need to provide your OpenAI API key, model, and system instructions.
+2. **OpenAI**
+   This option uses OpenAI's GPT models for parsing citations. You need to provide your OpenAI API key in a `.env` file (see *Environment Variables Setup* above), along with the model and system instructions in `ai_config.json`.
 
    **Sample JSON Configuration for OpenAI:**
    ```json
    {
        "platform": "OpenAI",
-       "openai_api_key": "your-openai-api-key",
        "openai_model": "your-finetuned-model",
        "system_instruction": "Extract all legal citations from the following footnote with one citation per line.",
        "temperature": 0.01
    }
    ```
 
-   We recommend a low temperature setting to ensure deterministic behavior.
+   **Note:** The `openai_api_key` is now read from the `.env` file, not from `ai_config.json`. We recommend a low temperature setting to ensure deterministic behavior.
 
 
 3. **Naive**  
@@ -190,6 +200,7 @@ The citation extraction task performs the best using a supervised fine-tuned gen
 1. **File Not Found Error**: Ensure that your input file exists in the correct path (`input/` folder by default).
 2. **Missing Dependencies**: If any required Python libraries are missing, run `pip install -r requirements.txt` to install them.
 3. **AI Issues**: Make sure your `ai_config.json` is correctly formatted and that your credentials are valid.
+4. **OpenAI API Key Error**: Ensure your `.env` file exists in the root directory and contains `OPENAI_API_KEY=your-api-key`. The API key should not be in `ai_config.json`.
 
 ## Future Updates
 

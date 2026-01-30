@@ -26,3 +26,10 @@ py/temp/
 *.swp
 *.lock
 *.log
+
+# Environment variables (contains API keys)
+.env
+
+# Input and output folders (user documents and generated files)
+input/
+output/
